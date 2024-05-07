@@ -10,8 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  screen_brightness: ^1.0.0
   shared_preferences: ^2.1.0
-
+  wakelock: ^0.6.2
+  flutter_native_splash: ^2.2.13
+  flutter_local_notifications: ^9.0.0
+  intl: 0.18.1
 
   cupertino_icons: ^1.0.6
 
@@ -28,4 +32,25 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/fonts/elmessiri.ttf
+    - assets/fonts/amiri.ttf
+    - assets/fonts/arabic_roman.ttf
+    - assets/splash/ldpi/
+    - assets/splash/mdpi/
+    - assets/splash/hdpi/
+    - assets/splash/xhdpi/
+    - assets/splash/xxhdpi/
+    - assets/splash/xxxhdpi/
+    - assets/notification_page_background.png
+    - assets/go_back_button.png
 
+  fonts:
+    - family: elmessiri
+      fonts:
+        - asset: assets/fonts/elmessiri.ttf
+    - family: amiri
+      fonts:
+        - asset: assets/fonts/amiri.ttf
+    - family: arabic_roman
+      fonts:
+        - asset: assets/fonts/arabic_roman.ttf
