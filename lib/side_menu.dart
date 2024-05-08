@@ -52,7 +52,7 @@ class SideMenu extends StatelessWidget {
   }
 
   Widget _buildMenuItem(BuildContext context, SideMenuItem item, double itemHeight) {
-    return GestureDetector(
+    return InkWell(
       onTap: () => onItemTap(item.route),
       child: Container(
         height: itemHeight - 3, // Reduce item height by 3 to account for spacing

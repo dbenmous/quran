@@ -146,6 +146,14 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
       if (selectedPage != null) {
         _pageController?.jumpToPage(604 - selectedPage);
       }
+    } else if (route == '/ahzab') {
+      final int? selectedPage = await Navigator.push<int>(
+        context,
+        MaterialPageRoute(builder: (context) => AhzabPage()),
+      );
+      if (selectedPage != null) {
+        _pageController?.jumpToPage(604 - selectedPage);
+      }
     } else if (route == '/sowar') {
       final int? selectedPage = await Navigator.push<int>(
         context,
@@ -158,6 +166,7 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
       Navigator.pushNamed(context, route);
     }
   }
+
 
 
 

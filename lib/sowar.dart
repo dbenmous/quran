@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SowarPage extends StatefulWidget {
   @override
@@ -8,7 +9,9 @@ class SowarPage extends StatefulWidget {
 }
 
 class _SowarPageState extends State<SowarPage> {
+  final ScrollController _scrollController = ScrollController();
   Timer? _navigationTimer;
+  static const String scrollPositionKey = 'sowar_scroll_position';
 
   final List<Map<String, String>> safahatList = [
     {'number': '1', 'surah': 'الفاتحة', 'type': 'مكية', 'ayat': '7', 'page': '1'},
@@ -131,6 +134,27 @@ class _SowarPageState extends State<SowarPage> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    _loadScrollPosition();
+    _scrollController.addListener(_saveScrollPosition);
+  }
+
+  void _loadScrollPosition() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final double? scrollPosition = prefs.getDouble(scrollPositionKey);
+    //print('Loaded scroll position: $scrollPosition');
+    if (scrollPosition != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.jumpTo(scrollPosition);
+        //print('Scrolled to position: $scrollPosition');
+      });
+    }
+  }
+
+  void _saveScrollPosition() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final double scrollPosition = _scrollController.position.pixels;
+    await prefs.setDouble(scrollPositionKey, scrollPosition);
+    //print('Saving scroll position: $scrollPosition');
   }
 
   void _showNavigationTemporarily() {
@@ -148,6 +172,8 @@ class _SowarPageState extends State<SowarPage> {
   @override
   void dispose() {
     _navigationTimer?.cancel();
+    _scrollController.removeListener(_saveScrollPosition);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -178,65 +204,73 @@ class _SowarPageState extends State<SowarPage> {
                 ),
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: safahatList.length,
-                    itemBuilder: (context, index) {
-                      final safahat = safahatList[index];
-                      return InkWell(
-                        onTap: () => _goToPage(safahat['page']!),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                      itemBuilder: (context, index) {
+                        final safahat = safahatList[index];
+                        return InkWell(
+                          onTap: () => _goToPage(safahat['page']!),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  child: Text(
+                                    safahat['page']!,
+                                    style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'amiri'),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    safahat['ayat']!,
+                                    style: TextStyle(fontSize: 16, fontFamily: 'amiri', color: Colors.black),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    safahat['type']!,
+                                    style: TextStyle(fontSize: 16, fontFamily: 'amiri', color: Colors.black),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    safahat['surah']!,
+                                    style: TextStyle(fontSize: 16, fontFamily: 'amiri', color: Colors.black),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  child: Text(
+                                    safahat['number']!,
+                                    style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'amiri'),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Text(
-                                  safahat['page']!,
-                                  style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'amiri'),
-                                ),
-                              ),
-                              Text(
-                                safahat['ayat']!,
-                                style: TextStyle(fontSize: 16, fontFamily: 'amiri', color: Colors.black),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                safahat['type']!,
-                                style: TextStyle(fontSize: 16, fontFamily: 'amiri', color: Colors.black),
-                                textAlign: TextAlign.center,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  safahat['surah']!,
-                                  style: TextStyle(fontSize: 16, fontFamily: 'amiri', color: Colors.black),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Text(
-                                  safahat['number']!,
-                                  style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'amiri'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                        );
+                      }
                   ),
                 ),
               ],

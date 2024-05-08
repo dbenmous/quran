@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AjzaPage extends StatefulWidget {
   @override
@@ -8,7 +9,9 @@ class AjzaPage extends StatefulWidget {
 }
 
 class _AjzaPageState extends State<AjzaPage> {
+  final ScrollController _scrollController = ScrollController(); // Declare it as final
   Timer? _navigationTimer;
+  static const String scrollPositionKey = 'ajza_scroll_position';
 
   final List<Map<String, String>> ajzaList = [
     {'page': '1', 'surah': 'الفاتحة', 'first_word': 'الحمد', 'juz': '1'},
@@ -47,17 +50,36 @@ class _AjzaPageState extends State<AjzaPage> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    _loadScrollPosition();
+    _scrollController.addListener(_saveScrollPosition);
   }
 
   void _showNavigationTemporarily() {
-    // Show the navigation and status bar
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-    // Reset immersive mode after 2 seconds
     _navigationTimer?.cancel();
     _navigationTimer = Timer(const Duration(seconds: 2), () {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     });
+  }
+
+  Future<void> _saveScrollPosition() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final double position = _scrollController.position.pixels;
+    //print('Saving scroll position: $position');
+    prefs.setDouble(scrollPositionKey, position);
+  }
+
+  Future<void> _loadScrollPosition() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final double? scrollPosition = prefs.getDouble(scrollPositionKey);
+    //print('Loaded scroll position: $scrollPosition');
+    if (scrollPosition != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.jumpTo(scrollPosition);
+        //print('Scrolled to position: $scrollPosition');
+      });
+    }
   }
 
   void _goToPage(String page) {
@@ -66,7 +88,9 @@ class _AjzaPageState extends State<AjzaPage> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_saveScrollPosition);
     _navigationTimer?.cancel();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -96,6 +120,7 @@ class _AjzaPageState extends State<AjzaPage> {
                 ),
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: ajzaList.length,
                     itemBuilder: (context, index) {
                       final ajza = ajzaList[index];
