@@ -251,7 +251,7 @@ class _SowarPageState extends State<SowarPage> {
                                   flex: 1,
                                   child: Text(
                                     safahat['surah']!,
-                                    style: TextStyle(fontSize: 16, fontFamily: 'amiri', color: Colors.black),
+                                    style: TextStyle(fontSize: 19, fontFamily: 'thuluth', color: Colors.black),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),

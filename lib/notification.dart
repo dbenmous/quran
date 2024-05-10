@@ -64,8 +64,8 @@ class _NotificationPageState extends State<NotificationPage> {
     if (!_isMorningActivated) return;
     await scheduleNotification(
       id: 0,
-      title: 'أذكار الصباح',
-      body: 'حان وقت أذكار الصباح',
+      title: 'القرأن الكريم',
+      body: 'حان وقت الورد الصباحي',
       scheduledTime: _selectedMorningTime,
     );
   }
@@ -74,8 +74,8 @@ class _NotificationPageState extends State<NotificationPage> {
     if (!_isEveningActivated) return;
     await scheduleNotification(
       id: 1,
-      title: 'أذكار المساء',
-      body: 'حان وقت أذكار المساء',
+      title: 'القرأن الكريم',
+      body: 'حان وقت الورد المسائي',
       scheduledTime: _selectedEveningTime,
     );
   }
@@ -135,31 +135,41 @@ class _NotificationPageState extends State<NotificationPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    buildNotificationSection('تفعيل التنبيهات الصباحية', _isMorningActivated, _selectedMorningTime,
-                            (bool value) {
-                          setState(() => _isMorningActivated = value);
+                    buildNotificationSection(
+                      'تفعيل التنبيهات الصباحية',
+                      _isMorningActivated,
+                      _selectedMorningTime,
+                          (bool value) {
+                        setState(() => _isMorningActivated = value);
+                        saveSettings();
+                        scheduleMorningNotification();
+                      },
+                          (TimeOfDay? picked) {
+                        if (picked != null && picked != _selectedMorningTime) {
+                          setState(() => _selectedMorningTime = picked);
                           saveSettings();
                           scheduleMorningNotification();
-                        }, (TimeOfDay? picked) {
-                          if (picked != null && picked != _selectedMorningTime) {
-                            setState(() => _selectedMorningTime = picked);
-                            saveSettings();
-                            scheduleMorningNotification();
-                          }
-                        }),
+                        }
+                      },
+                    ),
                     SizedBox(height: 20),
-                    buildNotificationSection('تفعيل التنبيهات المسائية', _isEveningActivated, _selectedEveningTime,
-                            (bool value) {
-                          setState(() => _isEveningActivated = value);
+                    buildNotificationSection(
+                      'تفعيل التنبيهات المسائية',
+                      _isEveningActivated,
+                      _selectedEveningTime,
+                          (bool value) {
+                        setState(() => _isEveningActivated = value);
+                        saveSettings();
+                        scheduleEveningNotification();
+                      },
+                          (TimeOfDay? picked) {
+                        if (picked != null && picked != _selectedEveningTime) {
+                          setState(() => _selectedEveningTime = picked);
                           saveSettings();
                           scheduleEveningNotification();
-                        }, (TimeOfDay? picked) {
-                          if (picked != null && picked != _selectedEveningTime) {
-                            setState(() => _selectedEveningTime = picked);
-                            saveSettings();
-                            scheduleEveningNotification();
-                          }
-                        }),
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -179,7 +189,12 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Widget buildNotificationSection(
-      String title, bool isActive, TimeOfDay selectedTime, ValueChanged<bool> onToggle, ValueChanged<TimeOfDay?> onTimeChanged) {
+      String title,
+      bool isActive,
+      TimeOfDay selectedTime,
+      ValueChanged<bool> onToggle,
+      ValueChanged<TimeOfDay?> onTimeChanged,
+      ) {
     return Column(
       children: [
         Text(
@@ -199,6 +214,13 @@ class _NotificationPageState extends State<NotificationPage> {
             TimeOfDay? picked = await showTimePicker(
               context: context,
               initialTime: selectedTime,
+              builder: (BuildContext context, Widget? child) {
+                return Localizations.override(
+                  context: context,
+                  locale: Locale('ar', ''), // Arabic locale
+                  child: child,
+                );
+              },
             );
             onTimeChanged(picked);
           },

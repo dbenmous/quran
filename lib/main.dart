@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'ahzab.dart';
 import 'sowar.dart';
 import 'dua.dart';
 import 'donate.dart';
+import 'qibla.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +25,7 @@ class QuranApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Quran App',
+      title: 'القرأن الكريم بدون إشهار',
       theme: ThemeData(
         primarySwatch: Colors.green,
         fontFamily: 'elmessiri',
@@ -37,9 +39,19 @@ class QuranApp extends StatelessWidget {
         '/sowar': (context) => SowarPage(),
         '/dua': (context) => DuaPage(),
         '/donate': (context) => DonatePage(),
-        '/notification': (context) => NotificationPage(), // Add this route
-
+        '/notification': (context) => NotificationPage(),
+        '/qibla': (context) => QiblaPage(),
       },
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''), // English
+        const Locale('ar', ''), // Arabic
+      ],
+      locale: Locale('en', ''), // Set default locale to English
     );
   }
 }
@@ -259,7 +271,7 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
                         left: 10,
                         child: Icon(
                           Icons.bookmark,
-                          color: Colors.red,
+                          color: Colors.black38,
                           size: 30,
                         ),
                       ),
@@ -284,13 +296,13 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
                     SideMenuItem(icon: Icons.book, text: 'الأجزاء', route: '/ajza'),
                     SideMenuItem(icon: Icons.collections_bookmark, text: 'الأحزاب', route: '/ahzab'),
                     SideMenuItem(icon: Icons.pages, text: 'السور', route: '/sowar'),
-                    SideMenuItem(icon: Icons.bookmark_add, text: 'حفظ العلامة', route: 'add_bookmark'),
+                    SideMenuItem(icon: Icons.bookmark_add_outlined, text: 'حفظ العلامة', route: 'add_bookmark'),
                     SideMenuItem(icon: Icons.bookmark, text: 'الإنتقال إلى العلامة', route: 'go_to_bookmark'),
                     SideMenuItem(icon: Icons.volunteer_activism, text: 'دعاء الختم', route: '/dua'),
-                    SideMenuItem(icon: Icons.settings_display, text: 'إعدادات الشاشة', route: 'settings'),
+                    SideMenuItem(icon: Icons.settings, text: 'إعدادات الشاشة', route: 'settings'),
                     SideMenuItem(icon: Icons.notifications, text: 'منبه الورد', route: '/notification'),
-                    SideMenuItem(icon: Icons.favorite, text: 'تبرع لنستمر', route: '/donate'),
-                    SideMenuItem(icon: Icons.web, text: 'القائمة الثانوية', route: ''),
+                    SideMenuItem(icon: Icons.favorite, text: 'تبرع', route: '/donate'),
+                    SideMenuItem(icon: Icons.explore, text: 'القبلة', route: '/qibla'),
                   ],
                   onItemTap: (route) {
                     _enableImmersiveMode(); // Enable immersive mode on menu tap
