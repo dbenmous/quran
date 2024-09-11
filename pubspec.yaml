@@ -1,7 +1,7 @@
 name: quran
 description: A Quran reading app
 
-version: 1.0.0+1
+version: 2.0.1+6
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
@@ -16,8 +16,7 @@ dependencies:
   flutter_native_splash: ^2.2.13
   flutter_local_notifications: ^9.0.0
   intl: 0.18.1
-  flutter_qiblah: ^3.0.3
-  geolocator: ^11.0.0
+  url_launcher: ^6.0.20
   permission_handler: ^11.3.1
   flutter_vibrate: ^1.1.0
   vibration: ^1.7.4
@@ -26,6 +25,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.6
+  rename: ^3.0.2
 
 dev_dependencies:
   flutter_test:

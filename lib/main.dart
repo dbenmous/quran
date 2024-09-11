@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quran/notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'side_menu.dart';
 import 'ajza.dart';
 import 'ahzab.dart';
@@ -145,7 +145,7 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
     });
   }
 
-  void _navigateTo(String route) async {
+  Future<void> _navigateTo(String route) async {
     setState(() {
       _isMenuVisible = false;
     });
@@ -174,13 +174,27 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
       if (selectedPage != null) {
         _pageController?.jumpToPage(604 - selectedPage);
       }
+    } else if (route == 'privacy_policy') {
+      final Uri url = Uri.parse('https://thedigits.co/quran/privacy-policy/');
+      try {
+        if (await canLaunchUrl(url)) {
+          await launchUrl(
+            url,
+            mode: LaunchMode.externalApplication,
+          );
+        } else {
+          throw 'Could not launch $url';
+        }
+      } catch (e) {
+        print('Error launching URL: $e');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('لا يمكن فتح سياسة الخصوصية'),
+        ));
+      }
     } else {
       Navigator.pushNamed(context, route);
     }
   }
-
-
-
 
   void _toggleSettingsMenu() {
     setState(() {
@@ -293,16 +307,40 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
                 child: SideMenu(
                   width: 220,
                   items: [
-                    SideMenuItem(icon: Icons.book, text: 'الأجزاء', route: '/ajza'),
-                    SideMenuItem(icon: Icons.collections_bookmark, text: 'الأحزاب', route: '/ahzab'),
-                    SideMenuItem(icon: Icons.pages, text: 'السور', route: '/sowar'),
-                    SideMenuItem(icon: Icons.bookmark_add_outlined, text: 'حفظ العلامة', route: 'add_bookmark'),
-                    SideMenuItem(icon: Icons.bookmark, text: 'الإنتقال إلى العلامة', route: 'go_to_bookmark'),
-                    SideMenuItem(icon: Icons.volunteer_activism, text: 'دعاء الختم', route: '/dua'),
-                    SideMenuItem(icon: Icons.settings, text: 'إعدادات الشاشة', route: 'settings'),
-                    SideMenuItem(icon: Icons.notifications, text: 'منبه الورد', route: '/notification'),
-                    SideMenuItem(icon: Icons.favorite, text: 'تبرع', route: '/donate'),
-                    SideMenuItem(icon: Icons.explore, text: 'القبلة', route: '/qibla'),
+                    SideMenuItem(
+                        icon: Icons.book, text: 'الأجزاء', route: '/ajza'),
+                    SideMenuItem(
+                        icon: Icons.collections_bookmark,
+                        text: 'الأحزاب',
+                        route: '/ahzab'),
+                    SideMenuItem(
+                        icon: Icons.pages, text: 'السور', route: '/sowar'),
+                    SideMenuItem(
+                        icon: Icons.bookmark_add_outlined,
+                        text: 'حفظ العلامة',
+                        route: 'add_bookmark'),
+                    SideMenuItem(
+                        icon: Icons.bookmark,
+                        text: 'الإنتقال إلى العلامة',
+                        route: 'go_to_bookmark'),
+                    SideMenuItem(
+                        icon: Icons.volunteer_activism,
+                        text: 'دعاء الختم',
+                        route: '/dua'),
+                    SideMenuItem(
+                        icon: Icons.settings,
+                        text: 'إعدادات الشاشة',
+                        route: 'settings'),
+                    SideMenuItem(
+                        icon: Icons.notifications,
+                        text: 'منبه الورد',
+                        route: '/notification'),
+                    SideMenuItem(
+                        icon: Icons.favorite, text: 'تبرع', route: '/donate'),
+                    SideMenuItem(
+                        icon: Icons.privacy_tip_outlined,
+                        text: 'سياسة الخصوصية',
+                        route: 'privacy_policy'),
                   ],
                   onItemTap: (route) {
                     _enableImmersiveMode(); // Enable immersive mode on menu tap
@@ -347,7 +385,8 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
                             min: 0.0,
                             max: 1.0,
                             divisions: 10,
-                            label: (_brightness * 100).toStringAsFixed(0) + '%',
+                            label:
+                            (_brightness * 100).toStringAsFixed(0) + '%',
                             activeColor: Colors.greenAccent,
                             onChanged: (value) {
                               _saveBrightness(value);
