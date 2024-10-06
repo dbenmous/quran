@@ -14,13 +14,14 @@ dependencies:
   shared_preferences: ^2.1.0
   wakelock: ^0.6.2
   flutter_native_splash: ^2.2.13
-  flutter_local_notifications: ^9.0.0
-  intl: 0.18.1
+  flutter_local_notifications: ^17.2.3
+  workmanager: ^0.5.0
+  intl: ^0.19.0
   url_launcher: ^6.0.20
   permission_handler: ^11.3.1
   flutter_vibrate: ^1.1.0
   vibration: ^1.7.4
-  geocoding: ^2.0.5
+  geocoding: ^3.0.0
   flutter_localizations:
     sdk: flutter
 
@@ -32,7 +33,7 @@ dev_dependencies:
     sdk: flutter
 
 
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0
 
 
 # The following section is specific to Flutter packages.
@@ -43,16 +44,11 @@ flutter:
     - assets/fonts/elmessiri.ttf
     - assets/fonts/amiri.ttf
     - assets/fonts/arabic_roman.ttf
-    - assets/splash/ldpi/
-    - assets/splash/mdpi/
-    - assets/splash/hdpi/
-    - assets/splash/xhdpi/
-    - assets/splash/xxhdpi/
     - assets/splash/xxxhdpi/
     - assets/notification_page_background.png
     - assets/go_back_button.png
     - assets/qiblah_compass.png
-
+    - assets/background.png
   fonts:
     - family: elmessiri
       fonts:

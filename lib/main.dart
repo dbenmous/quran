@@ -13,10 +13,13 @@ import 'sowar.dart';
 import 'dua.dart';
 import 'donate.dart';
 import 'qibla.dart';
+import 'package:workmanager/workmanager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  // Initialize WorkManager
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
   runApp(QuranApp());
 }
