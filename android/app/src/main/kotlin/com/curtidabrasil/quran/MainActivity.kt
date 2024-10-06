@@ -1,4 +1,4 @@
-package com.thedigits.quran
+package com.curtidabrasil.quran
 
 import io.flutter.embedding.android.FlutterActivity
 
