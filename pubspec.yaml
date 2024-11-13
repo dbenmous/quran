@@ -62,3 +62,11 @@ flutter:
     - family: thuluth
       fonts:
         - asset: assets/fonts/thuluth.ttf
+
+flutter_native_splash:
+  color: "#ffffff" # Set this to match your splash screen background color
+  image: assets/splash/xxxhdpi/splash.png
+  android: true
+  ios: true
+  android_gravity: center
+  fullscreen: true

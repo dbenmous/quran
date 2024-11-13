@@ -34,9 +34,10 @@ class QuranApp extends StatelessWidget {
         fontFamily: 'elmessiri',
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/', // Start with splash screen
       routes: {
-        '/': (context) => QuranPageViewer(),
+        '/': (context) => SplashScreen(),
+        '/main': (context) => QuranPageViewer(),
         '/ajza': (context) => AjzaPage(),
         '/ahzab': (context) => AhzabPage(),
         '/sowar': (context) => SowarPage(),
@@ -55,6 +56,35 @@ class QuranApp extends StatelessWidget {
         const Locale('ar', ''), // Arabic
       ],
       locale: Locale('en', ''), // Set default locale to English
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Redirect to main page after 3 seconds
+    Timer(Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacementNamed('/main');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Image.asset(
+          'assets/splash/xxxhdpi/splash.png',
+          fit: BoxFit.contain,
+        ),
+      ),
     );
   }
 }
@@ -212,14 +242,12 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
     });
   }
 
-  // Method to re-enable immersive mode
   void _enableImmersiveMode() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
 
-  // Show buttons for 2 seconds, then return to immersive mode
   void _showButtonsTemporarily() {
-    _immersiveTimer?.cancel(); // Cancel any existing timer
+    _immersiveTimer?.cancel();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     _immersiveTimer = Timer(const Duration(seconds: 2), _enableImmersiveMode);
   }
@@ -237,7 +265,7 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          _enableImmersiveMode(); // Enable immersive mode on tap
+          _enableImmersiveMode();
           if (_isSettingsVisible) {
             _hideSettingsMenu();
           } else {
@@ -246,17 +274,15 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
         },
         onHorizontalDragUpdate: (details) {
           if (details.primaryDelta != null && details.primaryDelta! < 0) {
-            // Swiping left
-            _toggleMenu(); // Show side menu
+            _toggleMenu();
           } else if (details.primaryDelta != null && details.primaryDelta! > 0) {
-            // Swiping right
-            _toggleMenu(); // Hide side menu
+            _toggleMenu();
           }
         },
         onVerticalDragUpdate: (details) {
           if ((details.primaryDelta != null && details.primaryDelta! > 10) ||
               (details.primaryDelta != null && details.primaryDelta! < -10)) {
-            _showButtonsTemporarily(); // Show buttons for 2 seconds
+            _showButtonsTemporarily();
           }
         },
         child: Stack(
@@ -296,7 +322,7 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
                 );
               },
               onPageChanged: (index) {
-                _enableImmersiveMode(); // Enable immersive mode on page change
+                _enableImmersiveMode();
                 setState(() {
                   _currentPage = 604 - index;
                 });
@@ -346,7 +372,7 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
                         route: 'privacy_policy'),
                   ],
                   onItemTap: (route) {
-                    _enableImmersiveMode(); // Enable immersive mode on menu tap
+                    _enableImmersiveMode();
                     if (route == 'add_bookmark') {
                       _saveBookmark();
                     } else if (route == 'go_to_bookmark') {
@@ -362,7 +388,7 @@ class _QuranPageViewerState extends State<QuranPageViewer> {
             if (_isSettingsVisible)
               Center(
                 child: GestureDetector(
-                  onTap: () {}, // Prevent closing the popup on inner tap
+                  onTap: () {},
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: 300, maxHeight: 160),
                     child: Container(
